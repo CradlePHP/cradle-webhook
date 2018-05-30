@@ -1,0 +1,165 @@
+<style media="screen">
+    .webhook-events .events .checkbox {
+        padding-left: 20px;
+    }
+
+</style>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="/admin">
+                <i class="fas fa-home"></i> {{_ 'Admin'}}
+            </a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">
+            <a href="/admin/webhook/search">
+                <i class="fas fa-key"></i> {{_ 'Webhooks'}}
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            {{#when action '===' 'create'}}
+                <i class="fas fa-plus"></i> {{title}}
+            {{else}}
+                <i class="fas fa-edit"></i> {{title}}
+            {{/when}}
+        </li>
+    </ol>
+</nav>
+
+<div class="main-padding">
+    <h3 class="main-title">
+        <i class="fa fa-key"></i> {{title}}
+    </h3>
+    <p>
+        {{_ 'We’ll send a POST request to the URL below with details of any
+        subscribed events. Data format will be '}}
+    </p>
+    <form enctype="multipart/form-data" method="post">
+        <div class="form-group">
+            <label class="control-label">{{_ 'Webhook URL'}}</label>
+            <input
+                class="form-control {{#if errors.webhook_url}}is-invalid{{/if}}"
+                placeholder="https://example.com/postreceive"
+                name="webhook_url"
+                {{#if item.webhook_flag}}
+                readonly="readonly"
+                {{/if}}
+                value="{{item.webhook_url}}"
+                type="text">
+            {{#if errors.webhook_url}}
+            <div class="invalid-feedback">
+                {{errors.webhook_url}}
+            </div>
+            {{/if}}
+        </div>
+        <div class="form-group">
+            <label class="control-label">{{_ 'Webhook Secret'}}</label>
+            <input
+                class="form-control {{#if errors.webhook_secret}}is-invalid{{/if}}"
+                name="webhook_secret"
+                {{#if item.webhook_flag}}
+                readonly="readonly"
+                {{/if}}
+                value="{{item.webhook_secret}}"
+                type="text">
+            {{#if errors.webhook_secret}}
+            <div class="invalid-feedback">
+                {{errors.webhook_secret}}
+            </div>
+            {{/if}}
+        </div>
+        <div class="form-group webhook-events">
+            <label class="control-label">{{_ 'Select Events'}}</label>
+            <div class="">
+                <label class="checkbox checkbox-1">
+                    <input
+                    data-do="event-checkall"
+                    name="webhook_events[{{name}}][]"
+                    type="checkbox"
+                    value="create"
+                    {{#scope ../item.webhook_events name}}
+                        {{#in this 'create'}}
+                            checked
+                        {{/in}}
+                    {{/scope}}
+                    />
+                    <span>{{_ 'Send me everything'}}</span>
+                </label>
+            </div>
+            <ul class="list-group">
+                {{#each schemas}}
+                    {{#when name '!=' 'webhook'}}
+                        <li class="list-group-item m-1">
+                            <strong>
+                                <!-- <a href="/admin/system/model/{{name}}/search"> -->
+                                    {{#if icon}}<i class="{{icon}}"></i> {{/if}}
+                                    {{singular}}
+                                <!-- </a> -->
+                            </strong>
+                            <div class="events">
+                                <label class="checkbox checkbox-1">
+                                    <input
+                                    name="webhook_events[{{name}}][]"
+                                    type="checkbox"
+                                    value="create"
+                                    {{#scope ../item.webhook_events name}}
+                                        {{#in this 'create'}}
+                                            checked
+                                        {{/in}}
+                                    {{/scope}}
+                                    />
+                                    <span>{{_ 'Create'}}</span>
+                                </label>
+                                <label class="checkbox checkbox-1">
+                                    <input
+                                    name="webhook_events[{{name}}][]"
+                                    type="checkbox"
+                                    value="update"
+                                    {{#scope ../item.webhook_events name}}
+                                        {{#in this 'update'}}
+                                            checked
+                                        {{/in}}
+                                    {{/scope}}
+                                    />
+                                    <span>{{_ 'Update'}}</span>
+                                </label>
+                                <label class="checkbox checkbox-1">
+                                    <input
+                                    name="webhook_events[{{name}}][]"
+                                    type="checkbox"
+                                    value="delete"
+                                    {{#scope ../item.webhook_events name}}
+                                        {{#in this 'delete'}}
+                                            checked
+                                        {{/in}}
+                                    {{/scope}}
+                                    />
+                                    <span>{{_ 'Delete'}}</span>
+                                </label>
+                                <label class="checkbox checkbox-1">
+                                    <input
+                                    name="webhook_events[{{name}}][]"
+                                    type="checkbox"
+                                    value="restore"
+                                    {{#scope ../item.webhook_events name}}
+                                        {{#in this 'restore'}}
+                                            checked
+                                        {{/in}}
+                                    {{/scope}}
+                                    />
+                                    <span>{{_ 'Restore'}}</span>
+                                </label>
+                            </div>
+                        </li>
+                    {{/when}}
+                {{/each}}
+            </ul>
+        </div>
+        <div class="clear form-group">
+            <hr/>
+            <input type="hidden" name="csrf" value="" />
+            <button type="submit" class="btn btn-primary">{{_ 'Submit'}}</button>
+        </div>
+        <span class="help-text has-error"></span>
+    </form>
+</div>
